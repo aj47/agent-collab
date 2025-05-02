@@ -15,50 +15,18 @@ function Floor(props) {
   )
 }
 
-// Draggable cube component
-function DraggableCube({ position, color = 'hotpink' }) {
-  const [ref, api] = useBox(() => ({
+// Cube component
+function Cube({ position, color = 'hotpink' }) {
+  const [ref] = useBox(() => ({
     mass: 1,
     position,
     args: [1, 1, 1],
   }))
 
-  // State to track if the object is being dragged
-  const [isDragging, setIsDragging] = useState(false)
-
-  // Handle drag start
-  const handlePointerDown = (e) => {
-    e.stopPropagation()
-    setIsDragging(true)
-    // Disable gravity while dragging
-    api.mass.set(0)
-  }
-
-  // Handle drag movement
-  const handlePointerMove = (e) => {
-    if (isDragging && e.intersections.length) {
-      const { point } = e.intersections[0]
-      api.position.set(point.x, point.y, point.z)
-    }
-  }
-
-  // Handle drag end
-  const handlePointerUp = () => {
-    if (isDragging) {
-      setIsDragging(false)
-      // Re-enable gravity
-      api.mass.set(1)
-    }
-  }
-
   return (
     <mesh
       ref={ref}
       castShadow
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerLeave={handlePointerUp}
     >
       <boxGeometry args={[1, 1, 1]} />
       <meshStandardMaterial color={color} />
@@ -66,50 +34,18 @@ function DraggableCube({ position, color = 'hotpink' }) {
   )
 }
 
-// Draggable sphere component
-function DraggableSphere({ position, color = 'royalblue' }) {
-  const [ref, api] = useSphere(() => ({
+// Sphere component
+function Sphere({ position, color = 'royalblue' }) {
+  const [ref] = useSphere(() => ({
     mass: 1,
     position,
     args: [0.5],
   }))
 
-  // State to track if the object is being dragged
-  const [isDragging, setIsDragging] = useState(false)
-
-  // Handle drag start
-  const handlePointerDown = (e) => {
-    e.stopPropagation()
-    setIsDragging(true)
-    // Disable gravity while dragging
-    api.mass.set(0)
-  }
-
-  // Handle drag movement
-  const handlePointerMove = (e) => {
-    if (isDragging && e.intersections.length) {
-      const { point } = e.intersections[0]
-      api.position.set(point.x, point.y, point.z)
-    }
-  }
-
-  // Handle drag end
-  const handlePointerUp = () => {
-    if (isDragging) {
-      setIsDragging(false)
-      // Re-enable gravity
-      api.mass.set(1)
-    }
-  }
-
   return (
     <mesh
       ref={ref}
       castShadow
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerLeave={handlePointerUp}
     >
       <sphereGeometry args={[0.5, 32, 32]} />
       <meshStandardMaterial color={color} />
@@ -153,7 +89,7 @@ function Scene({ cubes, spheres, gravity }) {
 
         {/* Render all cubes */}
         {cubes.map((cube, index) => (
-          <DraggableCube
+          <Cube
             key={`cube-${index}`}
             position={cube.position}
             color={cube.color}
@@ -162,7 +98,7 @@ function Scene({ cubes, spheres, gravity }) {
 
         {/* Render all spheres */}
         {spheres.map((sphere, index) => (
-          <DraggableSphere
+          <Sphere
             key={`sphere-${index}`}
             position={sphere.position}
             color={sphere.color}
@@ -188,7 +124,7 @@ function Controls({
   return (
     <div className="controls">
       <h2>React Three Fiber Physics Simulation</h2>
-      <p>Drag objects with your mouse to move them around</p>
+      <p>Watch objects interact with physics</p>
 
       <div className="stats">
         <div>Cubes: {cubeCount}</div>
